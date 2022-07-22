@@ -1,0 +1,13 @@
+This project is a WIP ListenBrainz API client.
+
+CLI Args:
+- The first is a username
+- The second is the operation (currently supported is `current` or `count`)
+
+Example outputs:
+- current:
+$ py .\main.py Phate6660 current
+Currently playing: Within The Ruins - 'Enigma' on Phenomena [1 play(s)]
+- count:
+$ py .\main.py Phate6660 count
+Phate6660 has listened to 55322 tracks.
