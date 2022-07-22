@@ -2,6 +2,13 @@ import json
 import sys
 import requests
 
+argv_count = len(sys.argv)
+if argv_count == 1:
+    print("Please enter a username")
+    sys.exit(1)
+elif argv_count == 2:
+    print("Please enter an operation")
+    sys.exit(1)
 # Arg 1: Username
 user = sys.argv[1]
 # Arg 2: Operation
