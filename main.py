@@ -53,7 +53,7 @@ elif op == 'count':
     json_dict = json.loads(listen_count_response.text)
     # All of the info is stuck in the payload key
     useful_info = json_dict['payload']
-    # The boolean which indicates if the user is listening to music
+    # The amount of songs the user has played
     listen_count = useful_info['count']
     print(f'{user} has listened to {listen_count} tracks.')
 else:
