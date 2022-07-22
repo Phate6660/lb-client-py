@@ -16,7 +16,8 @@ Currently playing: Within The Ruins - 'Enigma' on Phenomena [1 play(s)]
 $ py .\main.py Phate6660 count
 Phate6660 has listened to 55322 tracks.
 - stats:
-$ 264 artists played in United States
+$ py .\main.py Phate6660 stats
+264 artists played in United States
 38 artists played in United Kingdom
 5 artists played in Italy
 3 artists played in Brazil
@@ -35,7 +36,7 @@ $ 264 artists played in United States
 1 artists played in Mongolia
 1 artists played in Iran
 3 artists played in Russia
-2 artists played in Iran
+2 artists played in Ireland
 1 artists played in Belgium
 1 artists played in Switzerland
 2 artists played in Norway
