@@ -73,14 +73,11 @@ elif op == 'stats':
     for country in artist_map:
         country_id = country['country'][:-1]
         # Most ID's should work shortened, but some need to be manually fixed
-        if country_id == "SW": # Sweden
-            country_id = "SE"
-        elif country_id == "UK": # Ukraine
-            country_id = "UA"
-        elif country_id == "DN": # Denmark
-            country_id = "DK"
-        elif country_id == "PO": # Poland
-            country_id = "PL"
+        match country_id:
+            case 'SW': country_id = 'SE' # Sweden
+            case 'UK': country_id = 'UA' # Ukraine
+            case 'DN': country_id = 'DK' # Denmark
+            case 'PO': country_id = 'PL' # Poland
         # We want to get the country name from the country code
         country_name = requests.get('http://country.io/names.json').json()[country_id]
         country_count = country['artist_count']
