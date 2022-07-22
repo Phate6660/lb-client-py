@@ -2,7 +2,11 @@ This project is a WIP ListenBrainz API client.
 
 CLI Args:
 - The first is a username
-- The second is the operation (currently supported is `current` or `count`)
+- The second is the operation (currently supported is `current`, `count`, `stats`)
+
+`current` is the currently playing song.
+`count` is the total song count.
+`stats` currently supports the artist maps of countries.
 
 Example outputs:
 - current:
@@ -11,3 +15,33 @@ Currently playing: Within The Ruins - 'Enigma' on Phenomena [1 play(s)]
 - count:
 $ py .\main.py Phate6660 count
 Phate6660 has listened to 55322 tracks.
+- stats:
+$ 264 artists played in United States
+38 artists played in United Kingdom
+5 artists played in Italy
+3 artists played in Brazil
+8 artists played in Australia
+4 artists played in France
+7 artists played in Japan
+7 artists played in Germany
+1 artists played in South Africa
+16 artists played in Sweden
+3 artists played in Finland
+2 artists played in Ukraine
+15 artists played in Canada
+1 artists played in Costa Rica
+2 artists played in Puerto Rico
+4 artists played in Denmark
+1 artists played in Mongolia
+1 artists played in Iran
+3 artists played in Russia
+2 artists played in Iran
+1 artists played in Belgium
+1 artists played in Switzerland
+2 artists played in Norway
+2 artists played in Greece
+1 artists played in New Zealand
+1 artists played in Iceland
+1 artists played in Croatia
+1 artists played in Poland
+1 artists played in Hungary

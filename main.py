@@ -14,12 +14,15 @@ user = sys.argv[1]
 # Arg 2: Operation
 op = sys.argv[2]
 base_url = 'https://api.listenbrainz.org/1/'
+stats_base_url = 'https://api.listenbrainz.org/1/stats/'
 # Example: https://api.listenbrainz.org/1/user/Phate6660/
 user_url = base_url + '/user/' + user + '/'
 # Example: https://api.listenbrainz.org/1/user/Phate6660/playing-now
 listening_url = user_url + 'playing-now'
 # Example: https://api.listenbrainz.org/1/user/Phate6660/listen-count
 listen_count_url = user_url + 'listen-count'
+# Example: https://api.listenbrinz.org/1/stats/user/Phate6660/artist-map
+artist_map_url = stats_base_url + 'user/' + user + '/artist-map'
 
 if op == 'current':
     # Get the response from the API
@@ -56,6 +59,32 @@ elif op == 'count':
     # The amount of songs the user has played
     listen_count = useful_info['count']
     print(f'{user} has listened to {listen_count} tracks.')
+elif op == 'stats':
+    # Get the response from the API
+    artist_map_response = requests.get(artist_map_url)
+    # Load the JSON response into a Python dictionary
+    json_dict = json.loads(artist_map_response.text)
+    # All of the info is stuck in the payload key
+    useful_info = json_dict['payload']
+    # The artist map is in the `artist_map` key
+    artist_map = useful_info['artist_map']
+    # The artist map is an array of dictonaries containing the country and the amount of artists played in that country
+    # The countries are abbreviated to their 3-letter code
+    for country in artist_map:
+        country_id = country['country'][:-1]
+        # Most ID's should work shortened, but some need to be manually fixed
+        if country_id == "SW": # Sweden
+            country_id = "SE"
+        elif country_id == "UK": # Ukraine
+            country_id = "UA"
+        elif country_id == "DN": # Denmark
+            country_id = "DK"
+        elif country_id == "PO": # Poland
+            country_id = "PL"
+        # We want to get the country name from the country code
+        country_name = requests.get('http://country.io/names.json').json()[country_id]
+        country_count = country['artist_count']
+        print(f'{country_count} artists played in {country_name}')
 else:
     print('Invalid operation. Valid operations are: current, count.')
     sys.exit(1)
