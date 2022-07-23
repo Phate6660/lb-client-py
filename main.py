@@ -1,3 +1,4 @@
+import db
 import json
 import sys
 import requests
@@ -74,22 +75,7 @@ elif op == 'stats':
     # The countries are abbreviated to their 3-letter code
     for country in artist_map:
         country_id = country['country']
-        if country_id == 'IRL':
-            country_id = 'IE'
-        elif country_id == 'IRN':
-            country_id = "IR"
-        # Most ID's should work shortened, but some need to be manually fixed
-        if country_id == 'IE' or country_id == 'IR':
-            pass
-        else:
-            match country_id[:-1]:
-                case 'SW': country_id = 'SE' # Sweden
-                case 'UK': country_id = 'UA' # Ukraine
-                case 'DN': country_id = 'DK' # Denmark
-                case 'PO': country_id = 'PL' # Poland
-                case other: country_id = country_id[:-1]
-        # We want to get the country name from the country code
-        country_name = requests.get('http://country.io/names.json').json()[country_id]
+        country_name = db.country_codes[country_id]
         country_count = country['artist_count']
         print(f'{country_count} artists played in {country_name}')
 else:
