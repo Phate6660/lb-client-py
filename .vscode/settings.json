@@ -1,5 +1,5 @@
 {
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
-    "python.linting.pylintArgs": ["--disable=C0103", "--disable=C0111", "--disable=C0301",  "--disable=C0304"]
+    "python.linting.pylintArgs": ["--disable=C0103", "--disable=C0111", "--disable=C0301",  "--disable=C0304", "--disable=C0411"]
 }
