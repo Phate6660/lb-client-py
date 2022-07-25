@@ -69,14 +69,17 @@ elif op == 'stats':
     useful_info = json_dict['payload']
     # The artist map is in the `artist_map` key
     artist_map = useful_info['artist_map']
+    # Replace the 3-letter country codes with their full names in the artist map
+    for country in artist_map:
+        country_name = db.country_codes[country['country']]
+        country['country'] = country_name
     # First sort the artist_map list alphabetically, then sort it by the amount of times the artist has been played (descending)
     artist_map.sort(key=lambda x: x['country'])
     artist_map.sort(key=lambda x: x['artist_count'], reverse=True)
     # The artist map is an array of dictonaries containing the country and the amount of artists played in that country
     # The countries are abbreviated to their 3-letter code
     for country in artist_map:
-        country_id = country['country']
-        country_name = db.country_codes[country_id]
+        country_name = country['country']
         country_count = country['artist_count']
         print(f'{country_count} artists played in {country_name}')
 else:
