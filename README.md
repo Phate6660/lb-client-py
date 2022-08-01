@@ -1,22 +1,40 @@
+# lb-client-py
+
 This project is a WIP ListenBrainz API client.
 
 CLI Args:
+
 - The first is a username
+
 - The second is the operation (currently supported is `current`, `count`, `stats`)
 
 `current` is the currently playing song.
+
 `count` is the total song count.
-`stats` currently supports the artist maps of countries.
+
+`stats` has some sub operations:
+
+- `artist-map` to display how many artists were played from different countries
+
+- `top-artists`, `top-releases`, and `top-tracks` which are self-explanatory
 
 Example outputs:
+
 - current:
-$ py .\main.py Phate6660 current
-Currently playing: Within The Ruins - 'Enigma' on Phenomena [1 play(s)]
+
+![current](images/current.png "Current Song")
+
 - count:
+
+```
 $ py .\main.py Phate6660 count
 Phate6660 has listened to 55322 tracks.
+```
+
 - stats:
-$ py .\main.py Phate6660 stats
+
+```
+$ py .\main.py Phate6660 stats artist-map
 270 artists played in United States
 38 artists played in United Kingdom
 16 artists played in Sweden
@@ -46,3 +64,10 @@ $ py .\main.py Phate6660 stats
 1 artists played in Poland
 1 artists played in South Africa
 1 artists played in Switzerland
+```
+
+![top-tracks](images/top-tracks.png "Top Tracks")
+
+![top-albums](images/top-releases.png "Top Albums")
+
+![top-artists](images/top-artists.png "Top Artists")
