@@ -27,11 +27,14 @@ listening_url: str = user_url + 'playing-now'
 # Example: https://api.listenbrainz.org/1/user/Phate6660/listen-count
 listen_count_url: str = user_url + 'listen-count'
 
-def get_response(url: str) -> dict:
+def get_response(url: str, isencapsulated: bool = True) -> dict:
     """Gets the JSON response from the URL, parses it as a dictionary, and returns it starting from the `payload` key."""
     response: Response = requests.get(url)
     json_dict: dict = json.loads(response.text)
-    return json_dict['payload'] # All info is encapsulated in the `payload` key
+    if isencapsulated:
+        return json_dict['payload'] # All info is encapsulated in the `payload` key
+    else:
+        return json_dict
 
 def print_current_song():
     """Prints the current song being played."""
@@ -59,7 +62,27 @@ def print_total_play_count():
     listen_count: int = useful_info['count']
     print(f'{user} has listened to {listen_count} tracks.')
 
+def print_similar_users():
+    """Prints the users that are similar to the user, based on the listening history."""
+    # Example: https://api.listenbrainz.org/1/stats/user/Phate6660/similar-users
+    similar_users_url: str = user_url + '/similar-users'
+    similar_users: dict = get_response(similar_users_url)
+    # Sort the similar users by their similarity level (descending)
+    similar_users.sort(key=lambda x: x['similarity'], reverse=True)
+    # Add coloring to username
+    colored_user = colored(user, 'white', attrs=['bold'])
+    # The similar users are an array of dictonaries containing the username and their similarity level
+    for similar_user in similar_users:
+        similar_user_name: str = colored(similar_user['user_name'], 'white', attrs=['bold'])
+        similar_user_count: str = similar_user['similarity']
+        if similar_user_count == 1.0:
+            print(f'{similar_user_name} is a perfect match for {colored_user}!')
+        else:
+            similar_user_count = colored(similar_user['similarity'], 'grey', attrs=['bold'])
+            print(f'{similar_user_name} is {similar_user_count} times more similar to {colored_user}')
+
 def print_artist_map():
+    """Prints how many artists per country the user has listened to. Only shows countries with at least 1 listen."""
     # Example: https://api.listenbrinz.org/1/stats/user/Phate6660/artist-map
     artist_map_url: str = stats_base_url + 'user/' + user + '/artist-map'
     useful_info: dict = get_response(artist_map_url)
@@ -80,6 +103,7 @@ def print_artist_map():
         print(f'{country_count} artists played in {country_name}')
 
 def print_top_tracks():
+    """Prints the top tracks the user has listened to, along with play counts."""
     # Example: https://api.listenbrainz.org/1/stats/user/Phate6660/recordings
     top_tracks_url: str = stats_base_url + 'user/' + user + '/recordings'
     useful_info: dict = get_response(top_tracks_url)
@@ -96,6 +120,7 @@ def print_top_tracks():
         print(f'{track_count} times played: \'{track_name}\' on {album_name} by {artist_name}')
 
 def print_top_releases():
+    """Prints the top releases the user has listened to, along with play counts."""
     # Example: https://api.listenbrainz.org/1/stats/user/Phate6660/releases
     top_releases_url: str = stats_base_url + 'user/' + user + '/releases'
     useful_info: dict = get_response(top_releases_url)
@@ -111,6 +136,7 @@ def print_top_releases():
         print(f'{release_count} times played: \'{release_name}\' by {artist_name}')
 
 def print_top_artists():
+    """Prints the top artists the user has listened to, along with play counts."""
     # Example: https://api.listenbrainz.org/1/stats/user/Phate6660/artists
     top_artists_url: str = stats_base_url + 'user/' + user + '/artists'
     useful_info: dict = get_response(top_artists_url)
@@ -136,18 +162,21 @@ def print_user_statistics(operation: str):
         case 'top-artists':
             print_top_artists()
 
-if op == 'current':
-    print_current_song()
-elif op == 'count':
-    print_total_play_count()
-elif op == 'stats':
-    if argv_count == 3:
-        print("Please enter an operation for user statistics. Currently supported is artist-map and top-tracks.")
+match op:
+    case 'current':
+        print_current_song()
+    case 'count':
+        print_total_play_count()
+    case 'similar':
+        print_similar_users()
+    case 'stats':
+        if argv_count == 3:
+            print("Please enter an operation for user statistics. Currently supported is artist-map and top-tracks.")
+            sys.exit(1)
+        else:
+            # Arg 2: Sub operation
+            subop: str = sys.argv[3]
+            print_user_statistics(subop)
+    case _:
+        print('Invalid operation. Valid operations are: current, count, and stat.')
         sys.exit(1)
-    else:
-        # Arg 2: Sub operation
-        subop: str = sys.argv[3]
-        print_user_statistics(subop)
-else:
-    print('Invalid operation. Valid operations are: current, count, and stat.')
-    sys.exit(1)

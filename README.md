@@ -6,11 +6,13 @@ CLI Args:
 
 - The first is a username
 
-- The second is the operation (currently supported is `current`, `count`, `stats`)
+- The second is the operation (currently supported is `current`, `count`, `similar`, `stats`)
 
 `current` is the currently playing song.
 
 `count` is the total song count.
+
+`similar` shows users similar to the specified one.
 
 `stats` has some sub operations:
 
@@ -30,6 +32,10 @@ Example outputs:
 $ py .\main.py Phate6660 count
 Phate6660 has listened to 55322 tracks.
 ```
+
+- similar:
+
+![similar-users](images/similar-users.png "Similar Users")
 
 - stats:
 
