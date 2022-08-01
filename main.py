@@ -33,7 +33,8 @@ def get_response(url) -> dict:
     json_dict = json.loads(response.text)
     return json_dict['payload'] # All info is encapsulated in the `payload` key
 
-if op == 'current':
+def print_current_song():
+    """Prints the current song being played."""
     useful_info: dict = get_response(listening_url)
     listens: dict = useful_info['listens']
     # If there are no elements in the list, then the user "is not listening to music"
@@ -42,7 +43,7 @@ if op == 'current':
     # If there are elements in the list, then the user is listening to music
     else:
         # `listens` is an array which has everything in the first element
-        listens: dict = listens[0]
+        listens = listens[0]
         # As you would expect, track metadata is in the `track_metadata` key
         track_metadata: dict = listens['track_metadata']
         artist_name: str = track_metadata['artist_name']
@@ -50,12 +51,16 @@ if op == 'current':
         track_name: str = track_metadata['track_name']
         play_count: int = useful_info['count']
         print(f"Currently playing: {artist_name} - '{track_name}' on {album_name} [{play_count} play(s)]")
-elif op == 'count':
+
+def print_total_play_count():
+    """Prints the total number of plays the user has made."""
     useful_info: dict = get_response(listen_count_url)
     # The amount of songs the user has played
     listen_count: int = useful_info['count']
     print(f'{user} has listened to {listen_count} tracks.')
-elif op == 'stats':
+
+def print_user_statistics():
+    """Prints the user's statistics. Currently supports printing a pretty-printed artist map."""
     useful_info: dict = get_response(artist_map_url)
     # The artist map is in the `artist_map` key
     artist_map: dict = useful_info['artist_map']
@@ -72,6 +77,13 @@ elif op == 'stats':
         country_name: str = country['country']
         country_count: int = country['artist_count']
         print(f'{country_count} artists played in {country_name}')
+
+if op == 'current':
+    print_current_song()
+elif op == 'count':
+    print_total_play_count()
+elif op == 'stats':
+    print_user_statistics()
 else:
     print('Invalid operation. Valid operations are: current, count, and stat.')
     sys.exit(1)
