@@ -4,9 +4,11 @@ import sys
 import requests
 
 argv_count = len(sys.argv)
+# Missing first argument
 if argv_count == 1:
     print("Please enter a username")
     sys.exit(1)
+# Missing second argument
 elif argv_count == 2:
     print("Please enter an operation")
     sys.exit(1)
@@ -25,16 +27,14 @@ listen_count_url = user_url + 'listen-count'
 # Example: https://api.listenbrinz.org/1/stats/user/Phate6660/artist-map
 artist_map_url = stats_base_url + 'user/' + user + '/artist-map'
 
+def get_response(url):
+    """Gets the JSON response from the URL, parses it as a dictionary, and returns it starting from the `payload` key."""
+    response = requests.get(url)
+    json_dict = json.loads(response.text)
+    return json_dict['payload'] # All info is encapsulated in the `payload` key
+
 if op == 'current':
-    # Get the response from the API
-    playingnow_response = requests.get(listening_url)
-    # Load the JSON response into a Python dictionary
-    json_dict = json.loads(playingnow_response.text)
-    # All of the info is stuck in the payload key
-    useful_info = json_dict['payload']
-    # The boolean which indicates if the user is listening to music
-    playing_now = useful_info['playing_now']
-    # Most info we want is in the `listens` key
+    useful_info = get_response(listening_url)
     listens = useful_info['listens']
     # If there are no elements in the list, then the user "is not listening to music"
     if len(listens) == 0:
@@ -51,22 +51,12 @@ if op == 'current':
         play_count = useful_info['count']
         print(f"Currently playing: {artist_name} - '{track_name}' on {album_name} [{play_count} play(s)]")
 elif op == 'count':
-    # Get the response from the API
-    listen_count_response = requests.get(listen_count_url)
-    # Load the JSON response into a Python dictionary
-    json_dict = json.loads(listen_count_response.text)
-    # All of the info is stuck in the payload key
-    useful_info = json_dict['payload']
+    useful_info = get_response(listen_count_url)
     # The amount of songs the user has played
     listen_count = useful_info['count']
     print(f'{user} has listened to {listen_count} tracks.')
 elif op == 'stats':
-    # Get the response from the API
-    artist_map_response = requests.get(artist_map_url)
-    # Load the JSON response into a Python dictionary
-    json_dict = json.loads(artist_map_response.text)
-    # All of the info is stuck in the payload key
-    useful_info = json_dict['payload']
+    useful_info = get_response(artist_map_url)
     # The artist map is in the `artist_map` key
     artist_map = useful_info['artist_map']
     # Replace the 3-letter country codes with their full names in the artist map
@@ -83,5 +73,5 @@ elif op == 'stats':
         country_count = country['artist_count']
         print(f'{country_count} artists played in {country_name}')
 else:
-    print('Invalid operation. Valid operations are: current, count.')
+    print('Invalid operation. Valid operations are: current, count, and stat.')
     sys.exit(1)
