@@ -20,11 +20,8 @@ user: str = sys.argv[1]
 op: str = sys.argv[2]
 base_url: str = 'https://api.listenbrainz.org/1/'
 stats_base_url: str = 'https://api.listenbrainz.org/1/stats/'
-# Example: https://api.listenbrainz.org/1/user/Phate6660/
 user_url: str = base_url + '/user/' + user + '/'
-# Example: https://api.listenbrainz.org/1/user/Phate6660/playing-now
 listening_url: str = user_url + 'playing-now'
-# Example: https://api.listenbrainz.org/1/user/Phate6660/listen-count
 listen_count_url: str = user_url + 'listen-count'
 
 def get_response(url: str, isencapsulated: bool = True) -> dict:
@@ -32,8 +29,9 @@ def get_response(url: str, isencapsulated: bool = True) -> dict:
     response: Response = requests.get(url)
     json_dict: dict = json.loads(response.text)
     if isencapsulated:
-        return json_dict['payload'] # All info is encapsulated in the `payload` key
+        return json_dict['payload'] # All info is encapsulated in the `payload` key for most responses
     else:
+        # But for the couple things that aren't encapsulated in the `payload` key, we can just pass False to the function
         return json_dict
 
 def print_current_song():
@@ -174,9 +172,9 @@ match op:
             print("Please enter an operation for user statistics. Currently supported is artist-map and top-tracks.")
             sys.exit(1)
         else:
-            # Arg 2: Sub operation
+            # Arg 3: Sub operation
             subop: str = sys.argv[3]
             print_user_statistics(subop)
     case _:
-        print('Invalid operation. Valid operations are: current, count, and stat.')
+        print('Invalid operation. Valid operations are: current, count, and stats.')
         sys.exit(1)
