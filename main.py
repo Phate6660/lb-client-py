@@ -1,9 +1,12 @@
+from colorama import init, Fore, Style
 from requests import Response
-from termcolor import colored
 import db
 import json
 import sys
 import requests
+
+# Inititialize colorama to fix formatted output on Windows
+init(autoreset=True)
 
 argv_count: int = len(sys.argv)
 # Missing first argument
@@ -50,9 +53,9 @@ def print_current_song():
         listens = listens[0]
         # As you would expect, track metadata is in the `track_metadata` key
         track_metadata: dict = listens['track_metadata']
-        artist_name: str = colored(track_metadata['artist_name'], 'grey', attrs=['bold'])
-        album_name: str = colored(track_metadata['release_name'], 'grey')
-        track_name: str = colored(track_metadata['track_name'], 'white', attrs=['underline'])
+        artist_name: str = Fore.LIGHTWHITE_EX + Style.BRIGHT + track_metadata['artist_name'] + Style.RESET_ALL
+        album_name: str = Fore.LIGHTCYAN_EX + Style.BRIGHT + track_metadata['release_name'] + Style.RESET_ALL
+        track_name: str = Fore.LIGHTGREEN_EX + track_metadata['track_name']
         play_count: int = useful_info['count']
         print(f"Currently playing: {artist_name} - '{track_name}' on {album_name} [{play_count} play(s)]")
 
@@ -71,15 +74,23 @@ def print_similar_users():
     # Sort the similar users by their similarity level (descending)
     similar_users.sort(key=lambda x: x['similarity'], reverse=True)
     # Add coloring to username
-    colored_user = colored(user, 'white', attrs=['bold'])
+    colored_user = Fore.WHITE + Style.BRIGHT + user + Style.RESET_ALL
     # The similar users are an array of dictonaries containing the username and their similarity level
     for similar_user in similar_users:
-        similar_user_name: str = colored(similar_user['user_name'], 'white', attrs=['bold'])
+        similar_user_name: str = Fore.WHITE + Style.BRIGHT + similar_user['user_name'] + Style.RESET_ALL
         similar_user_count: str = similar_user['similarity']
         if similar_user_count == 1.0:
             print(f'{similar_user_name} is a perfect match for {colored_user}!')
         else:
-            similar_user_count = colored(similar_user['similarity'], 'grey', attrs=['bold'])
+            # The similarity level is a float between 0 and 1
+            # We want to color-code the similarity level to make it more visible, so
+            # Anything over 0.75 is green, anything between 0.5 and 0.75 is yellow, and anything below 0.5 is red
+            if similar_user_count > 0.75:
+                similar_user_count = Fore.GREEN + Style.BRIGHT + str(similar_user_count) + Style.RESET_ALL
+            elif similar_user_count > 0.5:
+                similar_user_count = Fore.YELLOW + Style.BRIGHT + str(similar_user_count) + Style.RESET_ALL
+            else:
+                similar_user_count = Fore.RED + Style.BRIGHT + str(similar_user_count) + Style.RESET_ALL
             print(f'{similar_user_name} is {similar_user_count} times more similar to {colored_user}')
 
 def print_artist_map():
@@ -99,8 +110,8 @@ def print_artist_map():
     # The artist map is an array of dictonaries containing the country and the amount of artists played in that country
     # The countries are abbreviated to their 3-letter code
     for country in artist_map:
-        country_name: str = country['country']
-        country_count: int = country['artist_count']
+        country_name: str = Fore.LIGHTBLACK_EX + Style.BRIGHT + country['country'] + Style.RESET_ALL
+        country_count: str = Fore.WHITE + Style.BRIGHT + str(country['artist_count']) + Style.RESET_ALL
         print(f'{country_count} artists played in {country_name}')
 
 def print_top_tracks():
@@ -114,10 +125,10 @@ def print_top_tracks():
     top_tracks.sort(key=lambda x: x['listen_count'], reverse=True)
     # The top tracks are an array of dictonaries containing the track name and the amount of times it has been played
     for track in top_tracks:
-        track_name: str = colored(track['track_name'], 'white', attrs=['underline'])
-        album_name: str = colored(track['release_name'], 'grey')
-        artist_name: str = colored(track['artist_name'], 'grey', attrs=['bold'])
-        track_count: int = track['listen_count']
+        track_name: str = Fore.WHITE + Style.BRIGHT + track['track_name'] + Style.RESET_ALL
+        album_name: str = Fore.LIGHTBLACK_EX + track['release_name'] + Style.RESET_ALL
+        artist_name: str = Fore.LIGHTBLACK_EX + Style.BRIGHT + track['artist_name'] + Style.RESET_ALL
+        track_count: str = Fore.WHITE + Style.BRIGHT + str(track['listen_count']) + Style.RESET_ALL
         print(f'{track_count} times played: \'{track_name}\' on {album_name} by {artist_name}')
 
 def print_top_releases():
@@ -131,9 +142,9 @@ def print_top_releases():
     top_releases.sort(key=lambda x: x['listen_count'], reverse=True)
     # The top releases are an array of dictonaries containing the release name and the amount of times it has been played
     for release in top_releases:
-        release_name: str = colored(release['release_name'], 'white', attrs=['underline'])
-        artist_name: str = colored(release['artist_name'], 'grey', attrs=['bold'])
-        release_count: int = release['listen_count']
+        release_name: str = Fore.LIGHTBLACK_EX + Style.BRIGHT + release['release_name'] + Style.RESET_ALL
+        artist_name: str = Fore.LIGHTBLACK_EX + Style.BRIGHT + release['artist_name'] + Style.RESET_ALL
+        release_count: str = Fore.WHITE + Style.BRIGHT + str(release['listen_count']) + Style.RESET_ALL
         print(f'{release_count} times played: \'{release_name}\' by {artist_name}')
 
 def print_top_artists():
@@ -147,8 +158,8 @@ def print_top_artists():
     top_artists.sort(key=lambda x: x['listen_count'], reverse=True)
     # The top artists are an array of dictonaries containing the artist name and the amount of times they have been played
     for artist in top_artists:
-        artist_name: str = colored(artist['artist_name'], 'white', attrs=['underline'])
-        artist_count: int = artist['listen_count']
+        artist_name: str = Fore.LIGHTBLACK_EX + Style.BRIGHT + artist['artist_name'] + Style.RESET_ALL
+        artist_count: int = Fore.WHITE + Style.BRIGHT + str(artist['listen_count']) + Style.RESET_ALL
         print(f'{artist_count} times played: \'{artist_name}\'')
 
 def print_user_statistics(operation: str):
@@ -162,6 +173,8 @@ def print_user_statistics(operation: str):
             print_top_releases()
         case 'top-artists':
             print_top_artists()
+        case _:
+            print(f'{operation} is not a valid operation, please try one of: artist-map, top-tracks, top-releases, top-artists')
 
 match op:
     case 'current':
