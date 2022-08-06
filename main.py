@@ -25,7 +25,10 @@ listening_url: str = user_url + 'playing-now'
 listen_count_url: str = user_url + 'listen-count'
 
 def get_response(url: str, isencapsulated: bool = True) -> dict:
-    """Gets the JSON response from the URL, parses it as a dictionary, and returns it starting from the `payload` key."""
+    """Gets the JSON response from the URL, and parses it as a dictionary.\n
+    Optionally takes a boolean to determine whether the response is encapsulated in the `payload` key.\n
+    If the bool is true (default -- since most responses are), then the contents of the `payload` key is returned.\n
+    Otherwise, the full response is returned."""
     response: Response = requests.get(url)
     json_dict: dict = json.loads(response.text)
     if isencapsulated:
