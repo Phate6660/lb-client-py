@@ -1,4 +1,45 @@
-country_codes = {
+from colorama import Fore, Style
+from shared_functions import StyleApplyer
+import sys
+
+argv_count: int = len(sys.argv)
+# Missing first argument
+if argv_count == 1:
+    print("Please enter a username")
+    sys.exit(1)
+# Missing second argument
+elif argv_count == 2:
+    print("Please enter an operation")
+    sys.exit(1)
+# Arg 1: Username
+user: str = sys.argv[1]
+# Arg 2: Operation
+op: str = sys.argv[2]
+base_url: str = 'https://api.listenbrainz.org/1/'
+stats_base_url: str = 'https://api.listenbrainz.org/1/stats/'
+user_url: str = base_url + '/user/' + user + '/'
+listening_url: str = user_url + 'playing-now'
+listen_count_url: str = user_url + 'listen-count'
+listens_url: str = user_url + 'listens'
+similar_users_url: str = user_url + '/similar-users'
+artist_map_url: str = stats_base_url + 'user/' + user + '/artist-map'
+top_tracks_url: str = stats_base_url + 'user/' + user + '/recordings'
+top_releases_url: str = stats_base_url + 'user/' + user + '/releases'
+top_artists_url: str = stats_base_url + 'user/' + user + '/artists'
+listening_activity_url: str = stats_base_url + 'user/' + user + '/listening-activity'
+daily_activity_url: str = stats_base_url + 'user/' + user + '/daily-activity'
+
+# Define the colors to use for the various styles
+LightWhite = StyleApplyer(Fore.LIGHTWHITE_EX, Style.BRIGHT)
+LightBlack = StyleApplyer(Fore.LIGHTBLACK_EX, Style.BRIGHT)
+LightCyan = StyleApplyer(Fore.LIGHTCYAN_EX, Style.BRIGHT)
+LightGreen = StyleApplyer(Fore.LIGHTGREEN_EX, Style.BRIGHT)
+Green = StyleApplyer(Fore.GREEN, Style.BRIGHT)
+Red = StyleApplyer(Fore.RED, Style.BRIGHT)
+Yellow = StyleApplyer(Fore.YELLOW, Style.BRIGHT)
+White = StyleApplyer(Fore.WHITE, Style.BRIGHT)
+
+country_codes: dict = {
     "ABW": "Aruba",
     "AFG": "Afghanistan",
     "AGO": "Angola",
