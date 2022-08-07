@@ -1,6 +1,6 @@
 from colorama import init, Fore, Style
 from requests import Response
-from consts import listening_url, listen_count_url, listens_url, similar_users_url, artist_map_url, top_artists_url, top_releases_url, top_tracks_url
+from consts import argv_count, op, listening_url, listening_activity_url, listen_count_url, listens_url, similar_users_url, artist_map_url, top_artists_url, top_releases_url, top_tracks_url
 import datetime
 import json
 import sys
