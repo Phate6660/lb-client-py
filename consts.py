@@ -1,3 +1,5 @@
+from colorama import Fore, Style
+from shared_functions import StyleApplyer
 import sys
 
 argv_count: int = len(sys.argv)
@@ -26,6 +28,16 @@ top_releases_url: str = stats_base_url + 'user/' + user + '/releases'
 top_artists_url: str = stats_base_url + 'user/' + user + '/artists'
 listening_activity_url: str = stats_base_url + 'user/' + user + '/listening-activity'
 daily_activity_url: str = stats_base_url + 'user/' + user + '/daily-activity'
+
+# Define the colors to use for the various styles
+LightWhite = StyleApplyer(Fore.LIGHTWHITE_EX, Style.BRIGHT)
+LightBlack = StyleApplyer(Fore.LIGHTBLACK_EX, Style.BRIGHT)
+LightCyan = StyleApplyer(Fore.LIGHTCYAN_EX, Style.BRIGHT)
+LightGreen = StyleApplyer(Fore.LIGHTGREEN_EX, Style.BRIGHT)
+Green = StyleApplyer(Fore.GREEN, Style.BRIGHT)
+Red = StyleApplyer(Fore.RED, Style.BRIGHT)
+Yellow = StyleApplyer(Fore.YELLOW, Style.BRIGHT)
+White = StyleApplyer(Fore.WHITE, Style.BRIGHT)
 
 country_codes: dict = {
     "ABW": "Aruba",
