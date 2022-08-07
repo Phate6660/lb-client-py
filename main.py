@@ -1,5 +1,6 @@
 from colorama import init, Fore, Style
 from requests import Response
+import datetime
 import db
 import json
 import sys
@@ -65,6 +66,32 @@ def print_total_play_count():
     # The amount of songs the user has played
     listen_count: int = useful_info['count']
     print(f'{user} has listened to {listen_count} tracks.')
+
+def print_listens(total: int = 0):
+    """Prints the listens of the user.\n
+    Will optionally take a number of listens to show.\n
+    Defaults to 0 for infinite."""
+    # Example: https://api.listenbrainz.org/1/user/Phate6660/listens
+    listens_url: str = user_url + 'listens'
+    if total != 0:
+        # Limit the listen count to the number of listens specified
+        response = requests.get(listens_url, params={'count': total})
+        listens: dict = json.loads(response.text)['payload']
+    else:
+        # Get all listens
+        listens: dict = get_response(listens_url)
+    # The listens are in the `listens` key
+    listens = listens['listens']
+    # Sort the listens by the date they were played (descending)
+    listens.sort(key=lambda x: x['listened_at'], reverse=True)
+    # The listens are an array of dictonaries containing the track, artist, album, and date (in unix epoch timestamp format) they were played
+    for listen in listens:
+        metadata = listen['track_metadata'] # Metadata is in the `track_metadata` key
+        track_name: str = Fore.LIGHTBLACK_EX + Style.BRIGHT + metadata['track_name'] + Style.RESET_ALL
+        artist_name: str = Fore.LIGHTBLACK_EX + Style.BRIGHT + metadata['artist_name'] + Style.RESET_ALL
+        album_name: str = Fore.LIGHTCYAN_EX + Style.BRIGHT + metadata['release_name'] + Style.RESET_ALL
+        date: str = Fore.LIGHTWHITE_EX + Style.BRIGHT + str(datetime.datetime.fromtimestamp(listen['listened_at'])) + Style.RESET_ALL
+        print(f'{date} - {artist_name} - {track_name} on {album_name}')
 
 def print_similar_users():
     """Prints the users that are similar to the user, based on the listening history."""
@@ -181,6 +208,12 @@ match op:
         print_current_song()
     case 'count':
         print_total_play_count()
+    case 'listens':
+        if argv_count == 4:
+            count: int = int(sys.argv[3])
+            print_listens(count)
+        else:
+            print_listens()
     case 'similar':
         print_similar_users()
     case 'stats':

@@ -6,11 +6,17 @@ CLI Args:
 
 - The first is a username
 
-- The second is the operation (currently supported is `current`, `count`, `similar`, `stats`)
+- The second is the operation (currently supported is `current`, `count`, `listens`, `similar`, `stats`)
 
 `current` is the currently playing song.
 
 `count` is the total song count.
+
+`listens` is for showing recent listens:
+
+- By default, it will show as many as possible.
+
+- Or you can optionally specify a count of listens to show.
 
 `similar` shows users similar to the specified one.
 
@@ -32,6 +38,10 @@ Example outputs:
 $ py .\main.py Phate6660 count
 Phate6660 has listened to 55322 tracks.
 ```
+
+- listens:
+
+![listens](images/listens.png "Listens")
 
 - similar:
 
