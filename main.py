@@ -1,6 +1,6 @@
 from colorama import init, Fore, Style
 from requests import Response
-from consts import argv_count, op, listening_url, listening_activity_url, listen_count_url, listens_url, similar_users_url, artist_map_url, top_artists_url, top_releases_url, top_tracks_url
+from consts import argv_count, op, user, country_codes, listening_url, listening_activity_url, daily_activity_url, listen_count_url, listens_url, similar_users_url, artist_map_url, top_artists_url, top_releases_url, top_tracks_url
 import datetime
 import json
 import sys
@@ -48,7 +48,7 @@ def print_total_play_count():
     useful_info: dict = get_response(listen_count_url)
     # The amount of songs the user has played
     listen_count: int = useful_info['count']
-    print(f'{consts.user} has listened to {listen_count} tracks.')
+    print(f'{user} has listened to {listen_count} tracks.')
 
 def print_listens(total: int = 0):
     """Prints the listens of the user.\n
@@ -107,7 +107,7 @@ def print_artist_map():
     artist_map: dict = useful_info['artist_map']
     # Replace the 3-letter country codes with their full names in the artist map
     for country in artist_map:
-        country_name: str = consts.country_codes[country['country']]
+        country_name: str = country_codes[country['country']]
         country['country'] = country_name
     # First sort the artist_map list alphabetically, then sort it by the amount of times the artist has been played (descending)
     artist_map.sort(key=lambda x: x['country'])
