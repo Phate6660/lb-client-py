@@ -36,7 +36,8 @@ def get_response(url: str, isencapsulated: bool = True) -> dict:
     response: Response = requests.get(url)
     json_dict: dict = json.loads(response.text)
     if isencapsulated:
-        return json_dict['payload'] # All info is encapsulated in the `payload` key for most responses
+        # All info is encapsulated in the `payload` key for most responses
+        return json_dict['payload']
     else:
         # But for the couple things that aren't encapsulated in the `payload` key, we can just pass False to the function
         return json_dict
@@ -86,7 +87,8 @@ def print_listens(total: int = 0):
     listens.sort(key=lambda x: x['listened_at'], reverse=True)
     # The listens are an array of dictonaries containing the track, artist, album, and date (in unix epoch timestamp format) they were played
     for listen in listens:
-        metadata = listen['track_metadata'] # Metadata is in the `track_metadata` key
+        # Metadata is in the `track_metadata` key
+        metadata = listen['track_metadata']
         track_name: str = Fore.LIGHTBLACK_EX + Style.BRIGHT + metadata['track_name'] + Style.RESET_ALL
         artist_name: str = Fore.LIGHTBLACK_EX + Style.BRIGHT + metadata['artist_name'] + Style.RESET_ALL
         album_name: str = Fore.LIGHTCYAN_EX + Style.BRIGHT + metadata['release_name'] + Style.RESET_ALL
@@ -189,6 +191,39 @@ def print_top_artists():
         artist_count: int = Fore.WHITE + Style.BRIGHT + str(artist['listen_count']) + Style.RESET_ALL
         print(f'{artist_count} times played: \'{artist_name}\'')
 
+def print_listening_activity():
+    """Prints the user's listening activity over the course of a year for multiple years.\n
+    TODO: Add support for refining the range."""
+    # Example: https://api.listenbrainz.org/1/stats/user/Phate6660/listening-activity
+    listening_activity_url: str = stats_base_url + 'user/' + user + '/listening-activity'
+    useful_info: dict = get_response(listening_activity_url)
+    # The listening activity is in the `listening_activity` key
+    listening_activity: dict = useful_info['listening_activity']
+    for listen in listening_activity:
+        listen_count: str = Fore.LIGHTBLACK_EX + Style.BRIGHT + str(listen['listen_count']) + Style.RESET_ALL
+        from_timestamp: str = Fore.LIGHTBLACK_EX + Style.BRIGHT + datetime.datetime.fromtimestamp(listen['from_ts']).strftime('%d/%m/%Y') + Style.RESET_ALL
+        to_timestamp: str = Fore.LIGHTBLACK_EX + Style.BRIGHT + datetime.datetime.fromtimestamp(listen['to_ts']).strftime('%d/%m/%Y') + Style.RESET_ALL
+        print(f'{listen_count} listens from {from_timestamp} to {to_timestamp}')
+
+def print_daily_activity():
+    """Prints the user's daily listening activity.\n
+    TODO: The range for the daily activity seems to be a bit extreme. Add refining of the range."""
+    # Example: https://api.listenbrainz.org/1/stats/user/Phate6660/daily-activity
+    daily_activity_url: str = stats_base_url + 'user/' + user + '/daily-activity'
+    useful_info: dict = get_response(daily_activity_url)
+    from_ts = datetime.datetime.fromtimestamp(useful_info['from_ts']).strftime('%d/%m/%Y')
+    to_ts = datetime.datetime.fromtimestamp(useful_info['to_ts']).strftime('%d/%m/%Y')
+    # The daily activity is in the `daily_activity` key
+    daily_activity: dict = useful_info['daily_activity']
+    print(f'This info is from {from_ts} to {to_ts}.')
+    for day in daily_activity:
+        day_list = daily_activity[day]
+        for actual_day in day_list:
+            listen_count: str = Fore.LIGHTBLACK_EX + Style.BRIGHT + str(actual_day['listen_count']) + Style.RESET_ALL
+            hour: str = Fore.LIGHTBLACK_EX + Style.BRIGHT + str(actual_day['hour']) + Style.RESET_ALL
+            colored_day = Fore.LIGHTBLACK_EX + Style.BRIGHT + day + Style.RESET_ALL
+            print(f'{listen_count} listens at hour {hour} on {colored_day}')
+
 def print_user_statistics(operation: str):
     """Prints the user's statistics based on the operation."""
     match operation:
@@ -200,8 +235,20 @@ def print_user_statistics(operation: str):
             print_top_releases()
         case 'top-artists':
             print_top_artists()
+        case 'listening-activity':
+            print_listening_activity()
+        case 'daily-activity':
+            print_daily_activity()
         case _:
-            print(f'{operation} is not a valid operation, please try one of: artist-map, top-tracks, top-releases, top-artists')
+            print(
+f"'{operation}' is not a valid operation, please try one of:\n\
+* artist-map\n\
+* top-tracks\n\
+* top-releases\n\
+* top-artists\n\
+* listening-activity\n\
+* daily-activity"
+            )
 
 match op:
     case 'current':
