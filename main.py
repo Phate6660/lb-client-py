@@ -64,7 +64,9 @@ def print_listens(total: int = 0):
         track_name: str = LightBlack.Apply(metadata['track_name'])
         artist_name: str = LightBlack.Apply(metadata['artist_name'])
         album_name: str = LightCyan.Apply(metadata['release_name'])
-        date: str = LightWhite.Apply(str(datetime.datetime.fromtimestamp(listen['listened_at'])))
+        date: str = LightWhite.Apply(
+            str(datetime.datetime.fromtimestamp(listen['listened_at']))
+        )
         print(f'{date} - {artist_name} - {track_name} on {album_name}')
 
 def print_similar_users():
@@ -163,23 +165,33 @@ def print_listening_activity():
     listening_activity: dict = useful_info['listening_activity']
     for listen in listening_activity:
         listen_count: str = LightBlack.Apply(str(listen['listen_count']))
-        from_timestamp: str = LightBlack.Apply(datetime.datetime.fromtimestamp(listen['from_ts']).strftime('%d/%m/%Y'))
-        to_timestamp: str = LightBlack.Apply(datetime.datetime.fromtimestamp(listen['to_ts']).strftime('%d/%m/%Y'))
+        from_timestamp: str = LightBlack.Apply(
+            datetime.datetime.fromtimestamp(listen['from_ts']).strftime('%d/%m/%Y')
+        )
+        to_timestamp: str = LightBlack.Apply(
+            datetime.datetime.fromtimestamp(listen['to_ts']).strftime('%d/%m/%Y')
+        )
         print(f'{listen_count} listens from {from_timestamp} to {to_timestamp}')
 
 def print_daily_activity():
     """Prints the user's daily listening activity.\n
     TODO: The range for the daily activity seems to be a bit extreme. Add refining of the range."""
     useful_info: dict = get_response(daily_activity_url)
-    from_ts = datetime.datetime.fromtimestamp(useful_info['from_ts']).strftime('%d/%m/%Y')
-    to_ts = datetime.datetime.fromtimestamp(useful_info['to_ts']).strftime('%d/%m/%Y')
+    from_ts = datetime.datetime.fromtimestamp(
+        useful_info['from_ts']
+    ).strftime('%d/%m/%Y')
+    to_ts = datetime.datetime.fromtimestamp(
+        useful_info['to_ts']
+    ).strftime('%d/%m/%Y')
     # The daily activity is in the `daily_activity` key
     daily_activity: dict = useful_info['daily_activity']
     print(f'This info is from {from_ts} to {to_ts}.')
     for day in daily_activity:
         day_list = daily_activity[day]
         for actual_day in day_list:
-            listen_count: str = LightBlack.Apply(str(actual_day['listen_count']))
+            listen_count: str = LightBlack.Apply(
+                str(actual_day['listen_count'])
+            )
             hour: str = LightBlack.Apply(str(actual_day['hour']))
             colored_day = LightBlack.Apply(day)
             print(f'{listen_count} listens at hour {hour} on {colored_day}')

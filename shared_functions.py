@@ -21,6 +21,7 @@ class StyleApplyer:
     foreground: str
     style: str
     reset: str
+
     def __init__(self, foreground, style: str):
         self.foreground = foreground
         self.style = style
