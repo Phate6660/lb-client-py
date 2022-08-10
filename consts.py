@@ -18,10 +18,15 @@ op: str = sys.argv[2]
 
 # URLs
 base_url: str               = 'https://api.listenbrainz.org/1/'
+"""The base url used for the API."""
 stats_base_url: str         = 'https://api.listenbrainz.org/1/stats/'
+"""The base url used for the stats API."""
 user_url: str               = base_url       + '/user/'       + user + '/'
+"""The base url for the user API."""
 listening_url: str          = user_url       + 'playing-now'
+"""The url for fetching the current song."""
 listen_count_url: str       = user_url       + 'listen-count'
+"""The url for fetching the total listen count."""
 listens_url: str            = user_url       + 'listens'
 similar_users_url: str      = user_url       + '/similar-users'
 artist_map_url: str         = stats_base_url + 'user/' + user + '/artist-map'
@@ -33,13 +38,21 @@ daily_activity_url: str     = stats_base_url + 'user/' + user + '/daily-activity
 
 # Define the colors to use for the various styles
 LightWhite = StyleApplyer(Fore.LIGHTWHITE_EX, Style.BRIGHT)
+"""Light white color with bold."""
 LightBlack = StyleApplyer(Fore.LIGHTBLACK_EX, Style.BRIGHT)
+"""Light black (essentially grey) color with bold."""
 LightCyan  = StyleApplyer(Fore.LIGHTCYAN_EX,  Style.BRIGHT)
+"""Light cyan color with bold."""
 LightGreen = StyleApplyer(Fore.LIGHTGREEN_EX, Style.BRIGHT)
+"""Light green color with bold."""
 Green      = StyleApplyer(Fore.GREEN,         Style.BRIGHT)
+"""Green color with bold."""
 Red        = StyleApplyer(Fore.RED,           Style.BRIGHT)
+"""Red color with bold."""
 Yellow     = StyleApplyer(Fore.YELLOW,        Style.BRIGHT)
+"""Yellow color with bold."""
 White      = StyleApplyer(Fore.WHITE,         Style.BRIGHT)
+"""White color with bold."""
 
 country_codes: dict = {
     "ABW": "Aruba",

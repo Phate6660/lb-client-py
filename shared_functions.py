@@ -18,6 +18,7 @@ def get_response(url: str, isencapsulated: bool = True) -> dict:
         return json_dict
 
 class StyleApplyer:
+    """This class is used to apply styles to strings in a more readable and uniform way."""
     foreground: str
     style: str
     reset: str
@@ -28,4 +29,5 @@ class StyleApplyer:
         self.reset = Style.RESET_ALL
 
     def Apply(self, val: str) -> str:
+        """The function that actually applies the style to the string."""
         return self.foreground + self.style + val + self.reset
